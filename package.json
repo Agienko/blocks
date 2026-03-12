@@ -1,0 +1,18 @@
+{
+  "name": "snake",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --open --host",
+    "build": "vite build",
+    "preview": "vite preview --host"
+  },
+  "devDependencies": {
+    "@pixi/sound": "^6.0.1",
+    "@preact/signals-core": "^1.12.1",
+    "gsap": "^3.14.2",
+    "pixi.js": "^8.14.3",
+    "vite": "7.3.0"
+  }
+}
