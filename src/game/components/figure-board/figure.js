@@ -13,7 +13,7 @@ const getTextures = () => {
     if (textures) return textures;
     textures = [
         'red',
-        'blue',
+        // 'blue',
         'green',
         'yellow',
         'cyan',

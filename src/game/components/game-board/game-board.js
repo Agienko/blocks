@@ -2,6 +2,8 @@ import {Container, Sprite, Texture} from "pixi.js";
 import {sender} from "../../../sender/event-sender.js";
 import {SIGNALS} from "../../../signals/signals.js";
 import {BLOCK_SIZE, BOARD_SIZE} from "../../../config/constants.js";
+import gsap from "gsap";
+import {sound} from "@pixi/sound";
 
 const HALF_BLOCK_SIZE = BLOCK_SIZE / 2;
 
@@ -81,7 +83,10 @@ export class GameBoard extends Container{
         block.isLocked = true;
         block.alpha = 1;
         SIGNALS.score.value++;
-        if(isLast) this.checkCombinations();
+        if(isLast) {
+            sound.play('put', {volume: 0.1, end: 0.14});
+            this.checkCombinations();
+        }
     }
 
     onBack = () => {
@@ -89,6 +94,7 @@ export class GameBoard extends Container{
             if(block.isLocked) return;
             block.alpha = 0;
         });
+        sound.play('back', {volume: 0.2});
     }
 
     onMove = figure => {
@@ -122,7 +128,7 @@ export class GameBoard extends Container{
             if(result.hasWin) {
                 this.highlights.forEach(highlight => {
                     if(result.i.includes(highlight.i) || result.j.includes(highlight.j) || result.b.includes(highlight.b)) {
-                        highlight.alpha = 0.8;
+                        highlight.alpha = 0.5;
                     } else {
                         highlight.alpha = 0;
                     }
@@ -171,10 +177,20 @@ export class GameBoard extends Container{
     clean(data){
         if(!data.hasWin) return;
 
-        this.blocks.forEach(block => {
-            if(!data.i.includes(block.i) && !data.j.includes(block.j) && !data.b.includes(block.b)) return;
-            block.isLocked = false;
-            block.alpha = 0;
+        sound.play('win', {volume: 0.2, speed: 2});
+
+        const toClean = this.blocks.filter(block => {
+            return data.i.includes(block.i) || data.j.includes(block.j) || data.b.includes(block.b)
+        })
+
+        toClean.forEach((block, i) => {
+            gsap.to(block, {alpha: 0, delay: i*0.014, duration: 0.2, onComplete: () => {
+                    block.isLocked = false;
+
+                    if(i === toClean.length - 1) {
+                        sound.stop('win')
+                    }
+            }});
         });
 
         this.highlights.forEach(highlight => highlight.alpha = 0);
