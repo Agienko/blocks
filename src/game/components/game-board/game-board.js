@@ -184,12 +184,9 @@ export class GameBoard extends Container{
         })
 
         toClean.forEach((block, i) => {
+            block.isLocked = false;
             gsap.to(block, {alpha: 0, delay: i*0.014, duration: 0.2, onComplete: () => {
-                    block.isLocked = false;
-
-                    if(i === toClean.length - 1) {
-                        sound.stop('win')
-                    }
+                    if(i === toClean.length - 1) sound.stop('win')
             }});
         });
 
